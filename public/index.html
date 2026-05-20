@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NOMBRE CLINICA • Gestión de Turnos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body { font-family: 'Segoe UI', system-ui, sans-serif; }
+    .sidebar-link { transition: all 0.2s; }
+    .sidebar-link:hover { background-color: #dbeafe; color: #1e40af; }
+    .active { background-color: #3b82f6; color: white; }
+    .card { transition: all 0.3s ease; }
+    .card:hover { transform: translateY(-4px); }
+  </style>
+</head>
+<body class="bg-slate-100 overflow-hidden">
+
+  <div
+    id="login-screen"
+    class="fixed inset-0 bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center z-50">
+
+    <div class="bg-white rounded-3xl shadow-2xl p-10 w-full max-w-md">
+
+      <div class="text-center mb-8">
+
+        <i class="fa-solid fa-hospital-user text-6xl text-[#3b82f6] mb-4"></i>
+
+        <h1 class="text-3xl font-bold text-gray-800">
+          SICM
+        </h1>
+
+        <p class="text-gray-500 mt-2">
+          Sistema Integral Clínico Médico
+        </p>
+
+      </div>
+
+      <form id="loginForm" class="space-y-5">
+
+        <input
+          type="email"
+          id="login-email"
+          placeholder="Correo electrónico"
+          class="w-full px-5 py-4 border rounded-2xl focus:outline-none focus:border-[#3b82f6]"
+          required>
+
+        <input
+          type="password"
+          id="login-password"
+          placeholder="Contraseña"
+          class="w-full px-5 py-4 border rounded-2xl focus:outline-none focus:border-[#3b82f6]"
+          required>
+
+        <button
+          type="submit"
+          class="w-full bg-[#3b82f6] hover:bg-blue-700 text-white py-4 rounded-3xl font-semibold transition">
+          Ingresar al sistema
+        </button>
+
+      </form>
+
+      <button
+        id="show-register"
+        class="w-full mt-4 border border-[#3b82f6] text-[#3b82f6] py-4 rounded-3xl font-semibold hover:bg-blue-50 transition">
+        Crear cuenta
+      </button>
+
+      <div id="login-message"
+      class="mt-5 text-center text-sm"></div>
+
+    </div>
+
+  </div>
+
+  <div
+    id="register-modal"
+    class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+
+    <div class="bg-white rounded-3xl shadow-2xl p-10 w-full max-w-md">
+
+      <div class="text-center mb-8">
+
+        <i class="fa-solid fa-user-plus text-5xl text-[#3b82f6] mb-4"></i>
+
+        <h2 class="text-3xl font-bold text-gray-800">
+          Crear Cuenta
+        </h2>
+
+      </div>
+
+      <form id="registerForm" class="space-y-5">
+
+        <input
+          type="text"
+          id="register-username"
+          placeholder="Nombre de usuario"
+          class="w-full px-5 py-4 border rounded-2xl"
+          required>
+
+        <input
+          type="email"
+          id="register-email"
+          placeholder="Correo"
+          class="w-full px-5 py-4 border rounded-2xl"
+          required>
+
+        <input
+          type="password"
+          id="register-password"
+          placeholder="Contraseña"
+          class="w-full px-5 py-4 border rounded-2xl"
+          required>
+
+        <button
+          type="submit"
+          class="w-full bg-[#3b82f6] text-white py-4 rounded-3xl font-semibold">
+          Registrarse
+        </button>
+
+      </form>
+
+      <button
+        onclick="closeRegisterModal()"
+        class="w-full mt-4 bg-gray-100 py-3 rounded-2xl">
+        Cancelar
+      </button>
+
+      <div id="register-message"
+      class="mt-4 text-center text-sm"></div>
+
+    </div>
+
+  </div>
+
+  
+  <div id="app-container" class="hidden flex h-screen overflow-hidden">
+    <div class="w-64 bg-white shadow-xl flex flex-col">
+      <div class="p-6 border-b">
+        <div class="flex items-center gap-3">
+          <i class="fa-solid fa-hospital-user text-4xl text-[#3b82f6]"></i>
+          <div>
+            <h1 class="text-2xl font-bold text-gray-800">NOMBRE CLINICA</h1>
+            <p class="text-xs text-gray-500">Usaquén • Bogotá</p>
+          </div>
+        </div>
+      </div>
+
+      <nav class="flex-1 px-3 py-6">
+        <a onclick="showSection('home')" class="sidebar-link flex items-center gap-3 px-4 py-4 rounded-2xl mb-1 active" id="menu-home">
+          <i class="fa-solid fa-house w-5"></i> <span class="font-medium">Inicio</span>
+        </a>
+        <a onclick="showSection('patients')" class="sidebar-link flex items-center gap-3 px-4 py-4 rounded-2xl mb-1" id="menu-patients">
+          <i class="fa-solid fa-users w-5"></i> <span class="font-medium">Pacientes</span>
+        </a>
+        <a onclick="showSection('doctors')" class="sidebar-link flex items-center gap-3 px-4 py-4 rounded-2xl mb-1" id="menu-doctors">
+          <i class="fa-solid fa-user-doctor w-5"></i> <span class="font-medium">Médicos</span>
+        </a>
+        <a onclick="showSection('agenda')" class="sidebar-link flex items-center gap-3 px-4 py-4 rounded-2xl mb-1" id="menu-agenda">
+          <i class="fa-solid fa-calendar w-5"></i> <span class="font-medium">Agenda</span>
+        </a>
+      </nav>
+
+      <div class="p-4 border-t">
+        <button
+          onclick="logout()"
+          class="w-full bg-red-500 hover:bg-red-600 text-white py-3 rounded-2xl font-medium transition">
+          <i class="fa-solid fa-right-from-bracket"></i>
+
+          Cerrar sesión
+
+        </button>
+      </div>
+
+      <div class="p-4 border-t text-xs text-gray-400 text-center">
+        &copy; 2026 NOMBRE CLINICA. Todos los derechos reservados.
+      </div>
+    </div>
+
+    
+    <div class="flex-1 flex flex-col">
+
+      <div class="h-16 bg-white shadow flex items-center px-8 justify-between">
+        <h2 id="page-title" class="text-2xl font-semibold text-gray-800">Inicio - Citas Próximas</h2>
+        <div class="flex items-center gap-4">
+          <div class="text-right">
+            <p id="logged-user" class="text-sm font-medium">Usuario</p>
+            <p class="text-xs text-gray-500">Recepcionista</p>
+          </div>
+          <i class="fa-solid fa-circle-user text-3xl text-[#3b82f6]"></i>
+        </div>
+      </div>
+
+      
+      <div class="flex-1 p-8 overflow-auto">
+
+        
+        <div id="section-home" class="section">
+          <h3 class="text-xl font-semibold mb-6 flex items-center gap-2"><i class="fa-solid fa-calendar-check"></i> Citas Próximas</h3>
+
+          <button
+            onclick="executeETL()"
+            class="mb-6 bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-3xl font-semibold">
+            Ejecutar ETL Firebase → MySQL
+          </button>
+
+          <div id="upcoming-appointments" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </div>
+
+        
+        <div id="section-patients" class="section hidden">
+          <h3 class="text-xl font-semibold mb-6">Pacientes</h3>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-white rounded-3xl p-8 shadow">
+              <h4 class="font-medium mb-4">Agregar Nuevo Paciente</h4>
+              
+              <div class="space-y-4">
+                <input id="p_name" type="text" placeholder="Nombre" class="w-full px-5 py-4 border rounded-2xl focus:outline-none focus:border-[#3b82f6]">
+                <input id="p_last_name" type="text" placeholder="Apellido" class="w-full px-5 py-4 border rounded-2xl focus:outline-none focus:border-[#3b82f6]">
+                <input id="p_doc_identity" type="text" placeholder="Documento" class="w-full px-5 py-4 border rounded-2xl focus:outline-none focus:border-[#3b82f6]">
+                <input id="p_phone" type="tel" placeholder="Teléfono" class="w-full px-5 py-4 border rounded-2xl focus:outline-none focus:border-[#3b82f6]">
+                <input id="p_email" type="email" placeholder="Correo" class="w-full px-5 py-4 border rounded-2xl focus:outline-none focus:border-[#3b82f6]">
+                <button onclick="createPatient()" class="w-full bg-[#3b82f6] text-white py-4 rounded-3xl font-semibold">Guardar Paciente</button>
+              </div>
+            </div>
+            <div>
+              <button onclick="loadPatients()" class="mb-4 bg-slate-100 hover:bg-slate-200 px-6 py-3 rounded-3xl text-sm font-medium">Ver todos los pacientes</button>
+              <div id="patients-table" class="bg-white rounded-3xl shadow p-6"></div>
+            </div>
+          </div>
+        </div>
+
+      
+        <div id="section-doctors" class="section hidden">
+          <h3 class="text-xl font-semibold mb-6">Médicos</h3>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-white rounded-3xl p-8 shadow">
+              <h4 class="font-medium mb-4">Agregar Nuevo Médico</h4>
+              <div class="space-y-4">
+                <input id="d_name" type="text" placeholder="Nombre" class="w-full px-5 py-4 border rounded-2xl focus:outline-none focus:border-[#3b82f6]">
+                <input id="d_last_name" type="text" placeholder="Apellido" class="w-full px-5 py-4 border rounded-2xl focus:outline-none focus:border-[#3b82f6]">
+                <input id="d_phone" type="tel" placeholder="Teléfono" class="w-full px-5 py-4 border rounded-2xl focus:outline-none focus:border-[#3b82f6]">
+                <input id="d_email" type="email" placeholder="Correo" class="w-full px-5 py-4 border rounded-2xl focus:outline-none focus:border-[#3b82f6]">
+                <button onclick="createDoctor()" class="w-full bg-[#3b82f6] text-white py-4 rounded-3xl font-semibold">Guardar Médico</button>
+              </div>
+            </div>
+            <div>
+              <button onclick="loadDoctors()" class="mb-4 bg-slate-100 hover:bg-slate-200 px-6 py-3 rounded-3xl text-sm font-medium">Ver todos los médicos</button>
+              <div id="doctors-table" class="bg-white rounded-3xl shadow p-6"></div>
+            </div>
+          </div>
+        </div>
+
+        
+        <div id="section-agenda" class="section hidden">
+          <h3 class="text-xl font-semibold mb-6">Agenda - Nueva Cita</h3>
+          <div class="max-w-lg mx-auto bg-white rounded-3xl shadow-xl p-8">
+            <div class="space-y-5">
+              <input id="a_date" type="date" class="w-full px-5 py-4 border rounded-2xl">
+              <input id="a_time" type="time" class="w-full px-5 py-4 border rounded-2xl">
+              <input id="a_patient_id" type="number" placeholder="ID Paciente" class="w-full px-5 py-4 border rounded-2xl">
+              <input id="a_doctor_id" type="number" placeholder="ID Médico" class="w-full px-5 py-4 border rounded-2xl">
+              <textarea id="a_note" placeholder="Nota opcional" class="w-full px-5 py-4 border rounded-3xl h-28"></textarea>
+              <button onclick="createAppointment()" class="w-full bg-[#3b82f6] text-white py-5 rounded-3xl text-lg font-semibold">
+                Guardar Cita
+              </button>
+            </div>
+            <div id="appointment-result" class="mt-6 text-center"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+    document.getElementById('loginForm').addEventListener('submit',async (e) => {e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+
+      try {
+
+        const response = await fetch('/users/login', {
+
+          method: 'POST',
+
+          headers: {
+            'Content-Type':
+            'application/json'
+          },
+
+          body: JSON.stringify({
+            email,
+            password
+          })
+
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+
+          document.getElementById('login-screen').classList.add('hidden');
+          document.getElementById('app-container').classList.remove('hidden');
+          document.getElementById('logged-user').innerText =data.user.username;
+
+        }
+
+        else {
+
+          document.getElementById('login-message').innerHTML = `<p class="text-red-500">${data.error}</p>`;
+
+        }
+
+      }
+
+      catch (error) {
+        console.error(error);
+      }
+
+    });
+
+    function logout() {
+      location.reload();
+    }
+
+    document.getElementById('show-register').addEventListener('click', () => {
+
+      document.getElementById('register-modal').classList.remove('hidden');
+
+    });
+
+    function closeRegisterModal() {
+      document.getElementById('register-modal').classList.add('hidden');
+    }
+
+    document.getElementById('registerForm').addEventListener('submit',async (e) => {e.preventDefault();
+
+      const username = document.getElementById('register-username').value;
+
+      const email = document.getElementById('register-email').value;
+
+      const password = document.getElementById('register-password').value;
+
+      try {
+
+        const response = await fetch('/users/register', {
+
+          method: 'POST',
+
+          headers: {
+            'Content-Type':
+            'application/json'
+          },
+
+          body: JSON.stringify({
+
+            username,
+            email,
+            password
+
+          })
+
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+
+          document.getElementById('register-message').innerHTML = `
+            <p class="text-green-600">
+              Usuario registrado correctamente
+            </p>`;
+
+        }
+
+        else {
+
+          document.getElementById('register-message').innerHTML = `
+            <p class="text-red-500">
+              ${data.error}
+            </p>`;
+
+        }
+
+      }
+
+      catch (error) {
+
+        console.error(error);
+
+      }
+
+    });
+
+  </script>
+
+  <script src="./js/sql.js"></script>
+
+  <div id="successModal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+    <div class="bg-white rounded-3xl shadow-2xl p-10 max-w-sm w-full text-center">
+      <i class="fa-solid fa-circle-check text-7xl text-green-500 mb-6"></i>
+      <h2 class="text-3xl font-semibold text-gray-800 mb-2">¡Cita guardada con éxito!</h2>
+      <p class="text-gray-600 mb-8">La cita ha sido registrada correctamente en el sistema.</p>
+      <button onclick="hideSuccessModal()" 
+              class="w-full bg-[#3b82f6] hover:bg-blue-700 text-white font-semibold py-4 rounded-3xl text-lg transition">
+        OK
+      </button>
+    </div>
+  </div>
+</body>
+</html>
