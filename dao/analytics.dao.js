@@ -2,18 +2,14 @@ const firestore = require('../services/firebase.service');
 
 const saveEvent = async (eventData) => {
   try {
-    await firestore
-    .collection(
-      'analytics_events'
-    )
-    .add({
+    await firestore.collection('analytics_events').add({
 
-      ...eventData,
+        ...eventData,
 
-      created_at:
-      new Date()
+        created_at:
+          new Date()
 
-    });
+      });
 
     console.log(
       'Evento guardado en Firebase'

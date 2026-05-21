@@ -4,10 +4,7 @@ const db = require('../services/mysql.service');
 const executeETL = async (req, res) => {
   try {
 
-    const snapshot =
-    await firestore
-    .collection('analytics_events')
-    .get();
+    const snapshot = await firestore.collection('analytics_events').get();
 
     let imported = 0;
 
